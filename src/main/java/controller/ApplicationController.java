@@ -9,7 +9,7 @@ public class ApplicationController {
 
 @RequestMapping (value = "/test" , method = RequestMethod.GET)
 public String test() {
-  return "Hey User";
+  return "Hello Prabhu, welcome to the group";
 }
 
 @RequestMapping("/")
