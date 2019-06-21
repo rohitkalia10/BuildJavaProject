@@ -1,0 +1,13 @@
+server:
+  port: 8090
+  
+spring:
+  data:
+    mongodb:
+      database: onlineshopping
+      host: localhost
+      port: 27017
+      uri: mongodb://localhost/onlineshopping
+      repositories:
+        enabled: true
+        
