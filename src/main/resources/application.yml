@@ -2,6 +2,8 @@ server:
   port: 8090
   
 spring:
+  application:
+    name: BuildJava-App
   data:
     mongodb:
       database: onlineshopping
@@ -9,5 +11,9 @@ spring:
       port: 27017
       uri: mongodb://localhost/onlineshopping
       repositories:
-        enabled: true
-        
+        enable: true
+
+#eureka:
+#  client:
+#    serviceUrl: http://localhost:8761/eureka
+#
