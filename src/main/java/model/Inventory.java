@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "inventory")
-public class Inventory {
+public class Inventory implements Collection {
 
     @Id
     public ObjectId _id;
@@ -29,6 +29,10 @@ public class Inventory {
         return price;
     }
 
+
+    public Inventory() {
+
+    }
     public Inventory(ObjectId _id, String name, String price) {
         this._id = _id;
         this.name = name;

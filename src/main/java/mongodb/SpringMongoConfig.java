@@ -1,14 +1,19 @@
 package mongodb;
 
 import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
+import model.Collection;
+import model.Inventory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 
 @Configuration
 
@@ -26,9 +31,6 @@ public class SpringMongoConfig {
     @Value("${spring.data.mongodb.database}")
     private String mongoDB;
 
-    @Value("${spring.data.mongodb.collections}")
-    private String invCollection;
-
     public @Bean
     MongoTemplate mongoTemplate() throws Exception {
 
@@ -39,4 +41,27 @@ public class SpringMongoConfig {
 
         return mongoTemplate;
     }
+
+    public
+    List<Collection> mongoTemplate(String name, String price, Collection collection) throws Exception {
+        List<Collection> collectionList;
+        ServerAddress address = new ServerAddress(mongoHost, Integer.parseInt(mongoPort));
+        MongoClient mongoClient = new MongoClient(address);
+        MongoTemplate mongoTemplate = new MongoTemplate(mongoClient,mongoDB);
+
+
+        Query query = new Query();
+
+        if(name!=null)
+            query.addCriteria(Criteria.where("name").is(name));
+
+        if(price != null)
+            query.addCriteria(new Criteria().andOperator(Criteria.where("price").is(price)));
+
+
+        collectionList = mongoTemplate.find(query, Collection.class);
+
+        return collectionList;
+    }
+
 }

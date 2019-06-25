@@ -1,7 +1,11 @@
 package controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import model.Inventory;
 import mongodb.SpringMongoConfig;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -9,23 +13,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 
 public class ApplicationController {
 
+	private static final Logger logger = LogManager.getLogger(ApplicationController.class);
 	@Autowired
 	SpringMongoConfig config;
 
@@ -79,20 +80,21 @@ public class ApplicationController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		try {
-			jsonString =  mapper.writeValueAsString(inventoryList);
-		} catch (JsonProcessingException e) {
+			// jsonString = mapper.writeValueAsString(inventoryList);
+			Gson gson = new GsonBuilder().setPrettyPrinting().create();
+			jsonString = gson.toJson(inventoryList);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		  
-		  System.out.println("***********Value :::"+jsonString);
-		
+		System.out.println("***********Value :::" + jsonString);
+
 		return jsonString;
-		
-		
+
 	}
-	
+
+
 	@RequestMapping(value = "/searchByName/{name}", method = RequestMethod.GET)
 	public String searchByName(@PathVariable("name") String name) {
 //		JSONObject json = new JSONObject();
@@ -120,6 +122,31 @@ public class ApplicationController {
 		  
 		  System.out.println("***********Value :::"+jsonString);
 		
+		return jsonString;
+	}
+
+	@RequestMapping(value = "querybyname", method = RequestMethod.GET)
+	public String getNameByQueryParameter(@RequestParam Map<String, String> myParam) {
+		List<Inventory> inventoryList = new ArrayList<Inventory>();
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonString = null;
+
+		String name = myParam.get("name");
+		String price = myParam.get("price");
+		try {
+			MongoTemplate mongoTemplate = config.mongoTemplate();
+			Query query = new Query();
+			query.addCriteria(Criteria.where("name").is(name));
+			inventoryList = mongoTemplate.find(query, Inventory.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			jsonString =  mapper.writeValueAsString(inventoryList);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
 		return jsonString;
 	}
 	
