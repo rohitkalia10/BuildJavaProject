@@ -1,9 +1,7 @@
 package controller;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import model.Inventory;
-import mongodb.SpringMongoConfig;
+import data.SpringMongoConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +28,9 @@ public class ApplicationController {
 	private static final Logger logger = LogManager.getLogger(ApplicationController.class);
 	@Autowired
 	SpringMongoConfig config;
+
+	@Autowired
+	Utils utils;
 
 	@RequestMapping(value = "/shop", method = RequestMethod.POST)
 	public String onlineShopping() {
@@ -64,10 +66,7 @@ public class ApplicationController {
 
 	@RequestMapping(value = "/searchByPrice/{price}", method = RequestMethod.GET)
 	public String searchByPrice(@PathVariable("price") double price) {
-//		JSONObject json = new JSONObject();
-		List<Inventory> inventoryList = new ArrayList<Inventory>();
-		ObjectMapper mapper = new ObjectMapper();
-		String jsonString = null;
+		List<Inventory> inventoryList = new ArrayList<>();
 		try {
 
 			MongoTemplate mongoTemplate = config.mongoTemplate();
@@ -75,23 +74,11 @@ public class ApplicationController {
 			query.addCriteria(Criteria.where("price").is(price));
 			inventoryList = mongoTemplate.find(query, Inventory.class);
 
-		} catch (ParseException e) {
-			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
-		try {
-			// jsonString = mapper.writeValueAsString(inventoryList);
-			Gson gson = new GsonBuilder().setPrettyPrinting().create();
-			jsonString = gson.toJson(inventoryList);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("***********Value :::" + jsonString);
-
-		return jsonString;
-
+		return  utils.prettyJson(inventoryList);
 	}
 
 

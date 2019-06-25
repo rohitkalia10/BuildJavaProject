@@ -1,9 +1,8 @@
-package mongodb;
+package data;
 
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 import model.Collection;
-import model.Inventory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +11,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Configuration
@@ -43,7 +41,7 @@ public class SpringMongoConfig {
     }
 
     public
-    List<Collection> mongoTemplate(String name, String price, Collection collection) throws Exception {
+    List<Collection> mongoTemplate(String name, String price) throws Exception {
         List<Collection> collectionList;
         ServerAddress address = new ServerAddress(mongoHost, Integer.parseInt(mongoPort));
         MongoClient mongoClient = new MongoClient(address);

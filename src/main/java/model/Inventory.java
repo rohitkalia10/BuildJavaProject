@@ -11,29 +11,29 @@ public class Inventory implements Collection {
     public ObjectId _id;
 
     public String name;
-    public String price;
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public double price;
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getPrice() {
-        return price;
-    }
-
-
     public Inventory() {
 
     }
-    public Inventory(ObjectId _id, String name, String price) {
+    public Inventory(ObjectId _id, String name, double price) {
         this._id = _id;
         this.name = name;
         this.price = price;

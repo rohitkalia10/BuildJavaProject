@@ -1,7 +1,10 @@
 package model;
 
-public interface Collection {
+import org.springframework.stereotype.Component;
 
+@Component
+
+public interface Collection {
 
 
 }
