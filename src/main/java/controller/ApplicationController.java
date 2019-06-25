@@ -62,8 +62,8 @@ public class ApplicationController {
 	}
 
 	@RequestMapping(value = "/searchByPrice/{price}", method = RequestMethod.GET)
-	public JSONObject searchByPrice(@PathVariable("price") int price) {
-		JSONObject json = new JSONObject();
+	public String searchByPrice(@PathVariable("price") double price) {
+//		JSONObject json = new JSONObject();
 		List<Inventory> inventoryList = new ArrayList<Inventory>();
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonString = null;
@@ -88,14 +88,14 @@ public class ApplicationController {
 		  
 		  System.out.println("***********Value :::"+jsonString);
 		
-		return json;
+		return jsonString;
 		
 		
 	}
 	
 	@RequestMapping(value = "/searchByName/{name}", method = RequestMethod.GET)
 	public String searchByName(@PathVariable("name") String name) {
-		JSONObject json = new JSONObject();
+//		JSONObject json = new JSONObject();
 		List<Inventory> inventoryList = new ArrayList<Inventory>();
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonString = null;
@@ -121,9 +121,6 @@ public class ApplicationController {
 		  System.out.println("***********Value :::"+jsonString);
 		
 		return jsonString;
-		
-		
-		
 	}
 	
 	
