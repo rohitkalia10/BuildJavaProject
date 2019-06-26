@@ -5,12 +5,14 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "inventory")
-public class Inventory implements Collection {
+public class Inventory{
 
     @Id
     public ObjectId _id;
 
     public String name;
+    
+    public double price;
 
     public double getPrice() {
         return price;
@@ -19,8 +21,6 @@ public class Inventory implements Collection {
     public void setPrice(double price) {
         this.price = price;
     }
-
-    public double price;
 
     public void setName(String name) {
         this.name = name;
