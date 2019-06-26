@@ -14,7 +14,6 @@ spring:
       repositories:
         enable: true
 
-#eureka:
-#  client:
-#    serviceUrl: http://localhost:8761/eureka
-#
+    
+#logging:
+#  config: classpath:log4j2.xml

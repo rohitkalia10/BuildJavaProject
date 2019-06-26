@@ -2,7 +2,7 @@ package data;
 
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
-import model.Collection;
+import model.InventoryDao;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,12 +41,11 @@ public class SpringMongoConfig {
     }
 
     public
-    List<Collection> mongoTemplate(String name, String price) throws Exception {
-        List<Collection> collectionList;
+    List<InventoryDao> mongoTemplate(String name, String price) throws Exception {
+        List<InventoryDao> collectionList;
         ServerAddress address = new ServerAddress(mongoHost, Integer.parseInt(mongoPort));
         MongoClient mongoClient = new MongoClient(address);
         MongoTemplate mongoTemplate = new MongoTemplate(mongoClient,mongoDB);
-
 
         Query query = new Query();
 
@@ -57,7 +56,7 @@ public class SpringMongoConfig {
             query.addCriteria(new Criteria().andOperator(Criteria.where("price").is(price)));
 
 
-        collectionList = mongoTemplate.find(query, Collection.class);
+        collectionList = mongoTemplate.find(query, InventoryDao.class);
 
         return collectionList;
     }

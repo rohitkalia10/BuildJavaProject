@@ -1,6 +1,7 @@
 package controller;
 
 import model.Inventory;
+import model.InventoryDao;
 import data.SpringMongoConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,11 +13,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import util.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +33,11 @@ public class ApplicationController {
 	SpringMongoConfig config;
 
 	@Autowired
-	Utils utils;
+    private InventoryDao inventoryDao;
 
+	@Autowired
+	ObjectMapper mapper;
+	
 	@RequestMapping(value = "/shop", method = RequestMethod.POST)
 	public String onlineShopping() {
 
@@ -64,55 +70,55 @@ public class ApplicationController {
 		return json;
 	}
 
+	@RequestMapping(value = "/insertInventory", method = RequestMethod.POST)
+	public ResponseEntity insertInventory(@RequestBody Map<String, String> myParam) {
+		Inventory invEntity = new Inventory();
+
+		String name = myParam.get("name");
+		Double price = Double.parseDouble(myParam.get("price"));
+		
+		invEntity.setName(name);
+		invEntity.setPrice(price);
+		
+		inventoryDao.saveInventory(invEntity);
+		
+		return new ResponseEntity("{ \"status\" : \"SUCCESS\" }",HttpStatus.OK) ;
+	}
+	
+	
 	@RequestMapping(value = "/searchByPrice/{price}", method = RequestMethod.GET)
 	public String searchByPrice(@PathVariable("price") double price) {
 		List<Inventory> inventoryList = new ArrayList<>();
-		try {
-
-			MongoTemplate mongoTemplate = config.mongoTemplate();
-			Query query = new Query();
-			query.addCriteria(Criteria.where("price").is(price));
-			inventoryList = mongoTemplate.find(query, Inventory.class);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return  utils.prettyJson(inventoryList);
+		inventoryList = inventoryDao.findInventoryByPrice(price);
+		return  Utils.prettyJson(inventoryList);
 	}
 
 
 	@RequestMapping(value = "/searchByName/{name}", method = RequestMethod.GET)
 	public String searchByName(@PathVariable("name") String name) {
-//		JSONObject json = new JSONObject();
+		RestTemplate restTemplate = new RestTemplate();
 		List<Inventory> inventoryList = new ArrayList<Inventory>();
-		ObjectMapper mapper = new ObjectMapper();
-		String jsonString = null;
-		try {
-
-			MongoTemplate mongoTemplate = config.mongoTemplate();
-			Query query = new Query();
-			query.addCriteria(Criteria.where("name").is(name));
-			inventoryList = mongoTemplate.find(query, Inventory.class);
-
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		inventoryList = inventoryDao.findInventoryByName(name);
 		
-		try {
-			jsonString =  mapper.writeValueAsString(inventoryList);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+		String returnValue = "Something Broke"; 
+		if(inventoryList.size()<1) {
+			 final String uri = "http://localhost:8090/queryByName?name=Pencil";
+			 
+	//		 restTemplate.getForEntity(uri, List<Inventory> l, uriVariables)
+			 
+			 String result = restTemplate.getForObject(uri, String.class);
+			 try {
+				returnValue = mapper.writer().withDefaultPrettyPrinter().writeValueAsString(result);
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+		}else {
+			returnValue = Utils.prettyJson(inventoryList);
 		}
-		  
-		  System.out.println("***********Value :::"+jsonString);
-		
-		return jsonString;
+		return  returnValue;
 	}
 
-	@RequestMapping(value = "querybyname", method = RequestMethod.GET)
+	@RequestMapping(value = "/queryByName", method = RequestMethod.GET)
 	public String getNameByQueryParameter(@RequestParam Map<String, String> myParam) {
 		List<Inventory> inventoryList = new ArrayList<Inventory>();
 		ObjectMapper mapper = new ObjectMapper();
@@ -126,10 +132,11 @@ public class ApplicationController {
 			query.addCriteria(Criteria.where("name").is(name));
 			inventoryList = mongoTemplate.find(query, Inventory.class);
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		try {
-			jsonString =  mapper.writeValueAsString(inventoryList);
+			jsonString = mapper.writer().withDefaultPrettyPrinter().writeValueAsString(inventoryList);
+		//	jsonString = mapper.writeValueAsString(inventoryList);
+		//	jsonString =  mapper.writeValueAsString(inventoryList);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
