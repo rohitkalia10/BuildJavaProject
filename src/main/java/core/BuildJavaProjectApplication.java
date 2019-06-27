@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 //@EnableDiscoveryClient
-@ComponentScan(basePackages = { "core","controller","model", "data","schema", "util"} )
+@ComponentScan(basePackages = { "core","controller","model", "data","schema", "util","impl"} )
 public class BuildJavaProjectApplication {
 	private static final Logger logger = LogManager.getLogger(BuildJavaProjectApplication.class);
 

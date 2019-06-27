@@ -1,22 +1,19 @@
 package model;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
-import  model.Inventory;
 
 
-@Component
 public interface InventoryDao {
 
-    void saveInventory(Inventory entity);
+    void saveToCollections(Inventory entity);
 
-    void removeInventory(Long id);
+    void removeFromInventory(Inventory entity);
 
-    void updateInventory(Inventory entity);
+    void updateToCollections(Inventory entity);
 
-    List<Inventory> findInventoryByName(String name);
-    
-    List<Inventory> findInventoryByPrice(Double name);
-	
+    List<Inventory> find(Map<String, String> map);
+
 }
