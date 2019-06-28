@@ -1,9 +1,10 @@
 package impl;
 
-import model.InventoryDao;
+import model.CollectionDao;
 import model.Inventory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
@@ -13,25 +14,23 @@ import java.util.Map;
 
 @Component
 
-public class InventoryDaoImpl implements InventoryDao {
-
+public class InventoryDaoImpl<T> implements CollectionDao<T> {
 
     @Autowired
     MongoTemplate mongoTemplate;
 
-
     @Override
-    public void saveToCollections(Inventory entity) {
+    public void saveToCollections(Object entity) {
 
     }
 
     @Override
-    public void removeFromInventory(Inventory entity) {
+    public void removeFromCollection(Object entity) {
 
     }
 
     @Override
-    public void updateToCollections(Inventory entity) {
+    public void updateToCollections(Object entity) {
 
     }
 

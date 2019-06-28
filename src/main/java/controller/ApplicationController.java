@@ -1,6 +1,7 @@
 package controller;
 
-import model.InventoryDao;
+
+import model.CollectionDao;
 import model.Inventory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +22,7 @@ public class ApplicationController {
 	SpringMongoConfig config;*/
 
 	@Autowired
-    private InventoryDao inventoryDao;
+    CollectionDao inventoryDao;
 
 //	@Autowired
 //	ObjectMapper mapper;
