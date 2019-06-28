@@ -1,7 +1,6 @@
 package model;
 
 import org.bson.types.ObjectId;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -34,6 +33,7 @@ public class Inventory {
     public Inventory() {
 
     }
+
     public Inventory(ObjectId _id, String name, double price) {
         this._id = _id;
         this.name = name;

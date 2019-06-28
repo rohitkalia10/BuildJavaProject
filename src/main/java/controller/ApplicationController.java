@@ -1,8 +1,9 @@
 package controller;
 
 
-import model.CollectionDao;
+import impl.CollectionDao;
 import model.Inventory;
+import model.Users;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import util.Utils;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -18,14 +20,12 @@ import java.util.Map;
 public class ApplicationController {
 
 	private static final Logger logger = LogManager.getLogger(ApplicationController.class);
-/*	@Autowired
-	SpringMongoConfig config;*/
 
 	@Autowired
-    CollectionDao inventoryDao;
+    CollectionDao<Inventory> collectionDaoInventory;
 
-//	@Autowired
-//	ObjectMapper mapper;
+	@Autowired
+	CollectionDao<Users> collectionDaoUsers;
 
 /*	@RequestMapping(value = "/shop", method = RequestMethod.POST)
 	public String onlineShopping() {
@@ -102,11 +102,21 @@ public class ApplicationController {
 		return  returnValue;
 	}*/
 
-	@RequestMapping(value = "/query", method = RequestMethod.GET)
-	public String getQuery(@RequestParam Map<String, String> myParam) {
+	@RequestMapping(value = "/inventory", method = RequestMethod.GET)
+	public String getinventory(@RequestParam Map<String, String> myParam) {
 
-		List<Inventory> inventoryList = inventoryDao.find(myParam);
+
+		List<Users> inventoryList = collectionDaoInventory.find(myParam);
 		return Utils.prettyJson(inventoryList);
+
+
+	}
+
+	@RequestMapping(value = "/users", method = RequestMethod.GET)
+	public String getusers(@RequestParam Map<String, String> myParam) {
+
+		List<Inventory> usersList = collectionDaoUsers.find(myParam);
+			return Utils.prettyJson(usersList);
 
 	}
 	

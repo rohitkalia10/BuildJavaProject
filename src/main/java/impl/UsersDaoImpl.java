@@ -1,6 +1,6 @@
 package impl;
 
-import model.Inventory;
+import model.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
@@ -9,11 +9,13 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
 @Component
-public class InventoryDaoImpl<T> implements CollectionDao<T>  {
+@Primary
+public class UsersDaoImpl<T> implements CollectionDao<T> {
 
     @Autowired
     MongoTemplate mongoTemplate;
@@ -34,7 +36,7 @@ public class InventoryDaoImpl<T> implements CollectionDao<T>  {
     }
 
     @Override
-    public List<Inventory> find(Map<String, String> map) {
+    public List<Users> find(Map<String, String> map) {
 
         Query query = new Query();
         int i =0;
@@ -44,12 +46,12 @@ public class InventoryDaoImpl<T> implements CollectionDao<T>  {
                 query.addCriteria(Criteria.where(entry.getKey()).is(entry.getValue()));
             else {
                 query.addCriteria(new Criteria().andOperator(
-                        Criteria.where(entry.getKey()).is(Double.parseDouble(entry.getValue()))));
+                        Criteria.where(entry.getKey()).is(entry.getValue())));
             }
             i++;
             System.out.println(entry.getKey() + ":" + entry.getValue());
         }
-        List<Inventory> inventoryList = mongoTemplate.find(query, Inventory.class);
-        return inventoryList;
+        List<Users> userList = mongoTemplate.find(query, Users.class);
+        return userList;
     }
 }
